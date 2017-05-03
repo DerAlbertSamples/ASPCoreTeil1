@@ -31,6 +31,8 @@ namespace EmptyApp
             services.AddOptions();
 
             services.Configure<ReinRausOptions>(Configuration.GetSection("ReinRaus"));
+
+            services.AddSingleton<WaitService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

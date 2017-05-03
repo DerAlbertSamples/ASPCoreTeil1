@@ -9,19 +9,21 @@ namespace EmptyApp
     {
         private readonly RequestDelegate _next;
         private readonly IOptions<ReinRausOptions> _options;
+        private readonly WaitService _waitService;
 
-        public ReinRausMiddleware(RequestDelegate next, IOptions<ReinRausOptions> options)
+        public ReinRausMiddleware(RequestDelegate next, IOptions<ReinRausOptions> options, WaitService waitService)
         {
             _next = next;
             _options = options;
+            _waitService = waitService;
         }
 
         public async Task Invoke(HttpContext context)
         {
             await context.Response.WriteAsync($"{_options.Value.Nummer} rein<br />");
-            await Task.Delay(_options.Value.WaitTime);
+            await _waitService.Wait();
             await _next(context);
-            await Task.Delay(_options.Value.WaitTime);
+            await _waitService.Wait();
             await context.Response.WriteAsync($"{_options.Value.Nummer} raus<br />");
         }
     }
