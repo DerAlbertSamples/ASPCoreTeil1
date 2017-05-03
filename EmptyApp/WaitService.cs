@@ -11,19 +11,22 @@ namespace EmptyApp
 
     public class WaitService : IWaitService
     {
-        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger _logger;
         private readonly ReinRausOptions _options;
 
-        public WaitService(IOptions<ReinRausOptions> options, ILoggerFactory loggerFactory)
+        public WaitService(IOptions<ReinRausOptions> options, ILogger<WaitService> logger)
         {
-            _loggerFactory = loggerFactory;
             _options = options.Value;
+            _logger = logger;
         }
 
         public Task Wait()
         {
-            var logger = _loggerFactory.CreateLogger<WaitService>();
-            logger.LogInformation("Waiting for {WaitTime}", _options.WaitTime);
+            using (_logger.BeginScope(new { text = "Ding" }))
+            {
+                _logger.LogDebug("Waiting for {WaitTime}", _options.WaitTime);
+                _logger.LogInformation("Waiting for {WaitTime}", _options.WaitTime);
+            }
             return Task.Delay(_options.WaitTime);
         }
     }

@@ -49,7 +49,7 @@ namespace EmptyApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole();
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             var logger = loggerFactory.CreateLogger<Startup>();
             logger.LogWarning("Hello my {Name}", Environment.MachineName);
             if (env.IsDevelopment())
@@ -64,15 +64,6 @@ namespace EmptyApp
             });
 
             app.UseMiddleware<ReinRausMiddleware>();
-
-            app.Use(async (context, next) =>
-            {
-                await context.Response.WriteAsync("Zwei rein<br />");
-                await Task.Delay(TimeSpan.FromSeconds(1));
-                await next();
-                await Task.Delay(TimeSpan.FromSeconds(1));
-                await context.Response.WriteAsync("Zwei raus<br />");
-            });
 
             app.Run(async (context) =>
             {
