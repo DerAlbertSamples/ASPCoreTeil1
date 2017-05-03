@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using StructureMap;
 
 namespace EmptyApp
 {
@@ -26,13 +27,23 @@ namespace EmptyApp
         public IConfigurationRoot Configuration { get; }
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
 
             services.Configure<ReinRausOptions>(Configuration.GetSection("ReinRaus"));
 
-            services.AddSingleton<WaitService>();
+            var container = new Container();
+            container.Configure(c =>
+            {
+                c.Scan(a =>
+                {
+                    a.AssemblyContainingType<Startup>();
+                    a.WithDefaultConventions();
+                });
+            });
+            container.Populate(services);
+            return container.GetInstance<IServiceProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,4 +79,6 @@ namespace EmptyApp
             });
         }
     }
+
+
 }

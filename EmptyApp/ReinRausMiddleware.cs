@@ -9,9 +9,9 @@ namespace EmptyApp
     {
         private readonly RequestDelegate _next;
         private readonly IOptions<ReinRausOptions> _options;
-        private readonly WaitService _waitService;
+        private readonly IWaitService _waitService;
 
-        public ReinRausMiddleware(RequestDelegate next, IOptions<ReinRausOptions> options, WaitService waitService)
+        public ReinRausMiddleware(RequestDelegate next, IOptions<ReinRausOptions> options, IWaitService waitService)
         {
             _next = next;
             _options = options;

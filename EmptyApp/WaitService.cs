@@ -3,7 +3,12 @@ using Microsoft.Extensions.Options;
 
 namespace EmptyApp
 {
-    public class WaitService
+    public interface IWaitService
+    {
+        Task Wait();
+    }
+
+    public class WaitService : IWaitService
     {
         private ReinRausOptions _options;
 
