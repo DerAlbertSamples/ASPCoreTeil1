@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +14,13 @@ namespace EmptyApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+//            services.AddOptions();
+
+            services.AddReinRaus(options =>
+            {
+                options.Nummer = "Eins";
+                options.WaitTime = TimeSpan.FromSeconds(5);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -28,7 +33,13 @@ namespace EmptyApp
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMiddleware(typeof(ReinRausMiddleware), "Eins");
+            app.Use((context, next) =>
+            {
+                context.Response.ContentType = "text/html";
+                return next();
+            });
+
+            app.UseMiddleware<ReinRausMiddleware>();
 
             app.Use(async (context, next) =>
             {
@@ -38,8 +49,6 @@ namespace EmptyApp
                 await Task.Delay(TimeSpan.FromSeconds(1));
                 await context.Response.WriteAsync("Zwei raus<br />");
             });
-
-            app.UseMiddleware(typeof(ReinRausMiddleware), "Drei");
 
             app.Run(async (context) =>
             {

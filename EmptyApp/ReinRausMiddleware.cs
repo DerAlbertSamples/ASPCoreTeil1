@@ -1,27 +1,28 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace EmptyApp
 {
     public class ReinRausMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly string _nummer;
+        private readonly IOptions<ReinRausOptions> _options;
 
-        public ReinRausMiddleware(RequestDelegate next, string nummer)
+        public ReinRausMiddleware(RequestDelegate next, IOptions<ReinRausOptions> options)
         {
             _next = next;
-            _nummer = nummer;
+            _options = options;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            await context.Response.WriteAsync($"{_nummer} ein<br />");
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await context.Response.WriteAsync($"{_options.Value.Nummer} rein<br />");
+            await Task.Delay(_options.Value.WaitTime);
             await _next(context);
-            await Task.Delay(TimeSpan.FromSeconds(1));
-            await context.Response.WriteAsync($"{_nummer} raus<br />");
+            await Task.Delay(_options.Value.WaitTime);
+            await context.Response.WriteAsync($"{_options.Value.Nummer} raus<br />");
         }
     }
 }
