@@ -28,9 +28,29 @@ namespace EmptyApp
                 app.UseDeveloperExceptionPage();
             }
 
+            app.Use(async (context, next) =>
+            {
+                context.Response.ContentType = "text/html";
+
+                await context.Response.WriteAsync("Eins rein<br />");
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                await next();
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                await context.Response.WriteAsync("Eins raus<br />");
+            });
+
+            app.Use(async (context, next) =>
+            {
+                await context.Response.WriteAsync("Zwei rein<br />");
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                await next();
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                await context.Response.WriteAsync("Zwei raus<br />");
+            });
+
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("Hello World!");
+                await context.Response.WriteAsync("Hello World!<br />");
             });
         }
     }
