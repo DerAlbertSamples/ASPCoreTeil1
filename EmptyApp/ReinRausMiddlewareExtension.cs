@@ -15,10 +15,4 @@ namespace EmptyApp
             return serviceCollection;
         }
     }
-
-    public class ReinRausOptions
-    {
-        public string Nummer { get; set; } = string.Empty;
-        public TimeSpan WaitTime { get; set; } = TimeSpan.Zero;
-    }
 }
