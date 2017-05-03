@@ -50,7 +50,8 @@ namespace EmptyApp
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
-
+            var logger = loggerFactory.CreateLogger<Startup>();
+            logger.LogWarning("Hello my {Name}", Environment.MachineName);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
