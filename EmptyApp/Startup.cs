@@ -28,16 +28,7 @@ namespace EmptyApp
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Use(async (context, next) =>
-            {
-                context.Response.ContentType = "text/html";
-
-                await context.Response.WriteAsync("Eins rein<br />");
-                await Task.Delay(TimeSpan.FromSeconds(1));
-                await next();
-                await Task.Delay(TimeSpan.FromSeconds(1));
-                await context.Response.WriteAsync("Eins raus<br />");
-            });
+            app.UseMiddleware(typeof(ReinRausMiddleware), "Eins");
 
             app.Use(async (context, next) =>
             {
@@ -47,6 +38,8 @@ namespace EmptyApp
                 await Task.Delay(TimeSpan.FromSeconds(1));
                 await context.Response.WriteAsync("Zwei raus<br />");
             });
+
+            app.UseMiddleware(typeof(ReinRausMiddleware), "Drei");
 
             app.Run(async (context) =>
             {
